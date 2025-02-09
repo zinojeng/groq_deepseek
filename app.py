@@ -1,5 +1,5 @@
 import streamlit as st
-from groq.client import Client as GroqClient
+import groq
 import os
 
 # 頁面配置
@@ -113,8 +113,8 @@ with st.sidebar:
 def initialize_groq():
     try:
         st.info("嘗試初始化 Groq 客戶端...")
-        # 使用 GroqClient 而不是 Groq
-        client = GroqClient(
+        # 使用基本的 groq 初始化
+        client = groq.Client(
             api_key=os.environ["GROQ_API_KEY"]
         )
         return client
