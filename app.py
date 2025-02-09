@@ -111,7 +111,19 @@ with st.sidebar:
 
 @st.cache_resource
 def initialize_groq():
-    return groq.Groq(api_key=os.environ["GROQ_API_KEY"])
+    try:
+        # 嘗試使用基本初始化
+        return groq.Groq(
+            api_key=os.environ["GROQ_API_KEY"],
+            base_url="https://api.groq.com/v1"
+        )
+    except TypeError as e:
+        # 如果發生 TypeError（可能是由於 proxies 參數），使用更簡單的初始化
+        st.warning("使用備用初始化方法...")
+        return groq.Groq(api_key=os.environ["GROQ_API_KEY"])
+    except Exception as e:
+        st.error(f"初始化失敗：{str(e)}")
+        raise
 
 
 # 主要應用邏輯
