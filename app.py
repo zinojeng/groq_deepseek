@@ -1,5 +1,5 @@
 import streamlit as st
-import groq
+from groq.client import Client as GroqClient
 import os
 
 # 頁面配置
@@ -112,17 +112,17 @@ with st.sidebar:
 @st.cache_resource
 def initialize_groq():
     try:
-        # 嘗試使用基本初始化
-        return groq.Groq(
-            api_key=os.environ["GROQ_API_KEY"],
-            base_url="https://api.groq.com/v1"
+        st.info("嘗試初始化 Groq 客戶端...")
+        # 使用 GroqClient 而不是 Groq
+        client = GroqClient(
+            api_key=os.environ["GROQ_API_KEY"]
         )
-    except TypeError as e:
-        # 如果發生 TypeError（可能是由於 proxies 參數），使用更簡單的初始化
-        st.warning("使用備用初始化方法...")
-        return groq.Groq(api_key=os.environ["GROQ_API_KEY"])
+        return client
     except Exception as e:
         st.error(f"初始化失敗：{str(e)}")
+        st.error(f"錯誤類型：{type(e)}")
+        import sys
+        st.error(f"Python 版本：{sys.version}")
         raise
 
 
